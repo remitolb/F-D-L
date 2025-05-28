@@ -552,8 +552,13 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
 
         webhook.drawFP(servantArray, missionArray)
 
+    
     def topHome(self):
         self.Post(f'{fgourl.server_addr_}/home/top?_userId={self.user_id_}')
+
+    
+    def externalPayment(self):
+        self.Post(f'{fgourl.server_addr_}/externalPayment/reflect?_userId={self.user_id_}')
 
 
     def lq001(self):
