@@ -555,12 +555,13 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
     
     def topHome(self):
         self.Post(f'{fgourl.server_addr_}/home/top?_userId={self.user_id_}')
-
-    
-    def externalPayment(self):
+        
+        time.sleep(2)
+        self.Post(f'{fgourl.server_addr_}/externalPayment/reflect?_userId={self.user_id_}')
+        time.sleep(1)
         self.Post(f'{fgourl.server_addr_}/externalPayment/reflect?_userId={self.user_id_}')
 
-
+    
     def lq001(self):
          # https://game.fate-go.jp/present/list?
           
