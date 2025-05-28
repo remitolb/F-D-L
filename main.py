@@ -50,7 +50,6 @@ def main():
                 time.sleep(2)
                 instance.topHome()
                 time.sleep(0.5)
-                instance.externalPayment()
                 instance.lq001()
                 time.sleep(0.5)
                 instance.Present()
