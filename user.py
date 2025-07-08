@@ -399,11 +399,53 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
 
 
     def LTO_Gacha(self):
-        # 10/16 【期間限定】「岸波白野ピックアップフレンドポイント召喚」！
+        # 5/15 【期間限定】「アルトリア･ペンドラゴン〔リリィ〕フレンドポイント召喚」！
 
         nowAt = mytime.GetTimeStamp()
-        closedAt = 1730865599
+        closedAt = 1748404799
         
+        if nowAt > closedAt:
+            main.logger.info(f"\n {'=' * 40} \n [+] 期間限定召喚 已结束 \n {'=' * 40} ")
+            return
+
+        gachaId = 6  
+        gachaSubId = 4 
+
+        self.builder_.AddParameter('storyAdjustIds', '[]')
+        self.builder_.AddParameter('selectBonusList', '')
+        self.builder_.AddParameter('gachaId', str(gachaId))
+        self.builder_.AddParameter('num', '10')
+        self.builder_.AddParameter('ticketItemId', '0')
+        self.builder_.AddParameter('shopIdIndex', '1')
+        self.builder_.AddParameter('gachaSubId', str(gachaSubId))
+                
+        main.logger.info(f"\n {'=' * 40} \n [+] 期間限定召喚 GachaId：{gachaId} SubId：{gachaSubId} \n {'=' * 40} ")
+        data = self.Post(f'{fgourl.server_addr_}/gacha/draw?_userId={self.user_id_}')
+                
+        responses = data['response']
+
+        servantArray = []
+        missionArray = []
+
+        for response in responses:
+            resCode = response['resCode']
+            resSuccess = response['success']
+
+            if (resCode != "00"):
+                continue
+
+            if "gachaInfos" in resSuccess:
+                for info in resSuccess['gachaInfos']:
+                    servantArray.append(
+                        gacha.gachaInfoServant(
+                            info['objectId']
+                        )
+                    )
+
+        webhook.LTO_Gacha(servantArray)
+        return
+        
+        """
         if nowAt > closedAt:
             main.logger.info(f"\n {'=' * 40} \n [+] 期間限定召喚 已结束 \n {'=' * 40} ")
             return
@@ -460,6 +502,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
         if not found_svt:
             main.logger.info(f"\n {'=' * 40} \n [+] 不满足活动条件..不能参加限定召唤 \n {'=' * 40} ")
             return 
+            """
 
     def drawFP(self):
         #SubID判定有点不准了.偶尔错误抽卡失败...等哪天闲暇再修
@@ -475,6 +518,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
         self.builder_.AddParameter('ticketItemId', '0')
         self.builder_.AddParameter('shopIdIndex', '1')
         self.builder_.AddParameter('gachaSubId', gachaSubId)
+        #self.builder_.AddParameter('gachaSubId', '449')
 
         main.logger.info(f"\n {'=' * 40} \n [+] 友情卡池ID : {gachaSubId}\n {'=' * 40} " )
         data = self.Post(f'{fgourl.server_addr_}/gacha/draw?_userId={self.user_id_}')
@@ -508,10 +552,16 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
 
         webhook.drawFP(servantArray, missionArray)
 
+    
     def topHome(self):
         self.Post(f'{fgourl.server_addr_}/home/top?_userId={self.user_id_}')
+        
+        time.sleep(2)
+        self.Post(f'{fgourl.server_addr_}/externalPayment/reflect?_userId={self.user_id_}')
+        time.sleep(1)
+        self.Post(f'{fgourl.server_addr_}/externalPayment/reflect?_userId={self.user_id_}')
 
-
+    
     def lq001(self):
          # https://game.fate-go.jp/present/list?
           
@@ -532,7 +582,7 @@ xCGlz9vV3+AAQ31C2phoyd/QhvpL85p39n6Ibg==
 
         present_ids = []
         for item in data['cache']['replaced']['userPresentBox']:
-            if item['objectId'] in [2, 6, 11, 16, 3, 46, 18, 48, 4001, 100, 101, 102, 103, 104, 1, 4, 7998, 7999, 1000, 2000, 6999, 9570400, 9670400]: #添加你需要领取的物品 Id 或者 baseSvtId 进入筛选列表
+            if item['objectId'] in [2, 6, 11, 16, 3, 46, 18, 48, 4001, 100, 101, 102, 103, 104, 1, 4, 7998, 7999, 1000, 2000, 6999, 9570400, 9670400, 9670500, 9570500]: #添加你需要领取的物品 Id 或者 baseSvtId 进入筛选列表
                 present_ids.append(str(item['presentId']))
 
         with open('JJM.json', 'w') as f:
